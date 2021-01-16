@@ -4,6 +4,7 @@ import {
   InMemoryCache,
   ApolloProvider,
   gql,
+  useQuery,
 } from "@apollo/client";
 
 const client = new ApolloClient({
@@ -20,8 +21,23 @@ const GET_MESSAGES = gql`
     }
   }
 `;
+
+const Messages = ({ user }) => {
+  const { data } = useQuery(GET_MESSAGES);
+
+  if (data) {
+    return null;
+  }
+  console.log(data);
+  return JSON.stringify(data);
+};
+
 const Chat = () => {
-  return <div>I am a Chat window</div>;
+  return (
+    <div>
+      <Messages user="lopoz" />
+    </div>
+  );
 };
 
 export default () => (
