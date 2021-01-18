@@ -5,8 +5,9 @@ import {
   ApolloProvider,
   gql,
   useQuery,
+  useMutation,
 } from "@apollo/client";
-import { Col, Container, FormInput, Row } from "shards-react";
+import { Button, Col, Container, FormInput, Row } from "shards-react";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/",
@@ -23,8 +24,16 @@ const GET_MESSAGES = gql`
   }
 `;
 
+const POST_MESSAGE = gql`
+  mutation($user: String!, $content: String!) {
+    postMessage(user: $user, content: $content)
+  }
+`;
+
 const Messages = ({ user }) => {
-  const { data } = useQuery(GET_MESSAGES);
+  const { data } = useQuery(GET_MESSAGES, {
+    pollInterval: 500,
+  });
 
   if (!data) {
     return null;
@@ -78,6 +87,20 @@ const Chat = () => {
     user: "Lopoz",
     content: "",
   });
+
+  const [postMessage] = useMutation(POST_MESSAGE);
+
+  const onSend = () => {
+    if (state.content.length > 0) {
+      postMessage({
+        variables: state,
+      });
+    }
+    setState({
+      ...state,
+      content: "",
+    });
+  };
   return (
     <Container>
       <Messages user={state.user} />
@@ -104,7 +127,15 @@ const Chat = () => {
                 content: e.target.value,
               })
             }
+            onKeyUp={(e) => {
+              if (e.keyCode === 13) {
+                onSend();
+              }
+            }}
           />
+        </Col>
+        <Col xs={2} style={{ padding: 0 }}>
+          <Button onClick={() => onSend()}>Send</Button>
         </Col>
       </Row>
     </Container>
