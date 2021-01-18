@@ -6,7 +6,7 @@ import {
   gql,
   useQuery,
 } from "@apollo/client";
-import { Col, Container, Row } from "shards-react";
+import { Col, Container, FormInput, Row } from "shards-react";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/",
@@ -82,7 +82,30 @@ const Chat = () => {
     <Container>
       <Messages user={state.user} />
       <Row>
-        <Col xs={12} style={{ padding: 0 }}></Col>
+        <Col xs={2} style={{ padding: 0 }}>
+          <FormInput
+            label="User"
+            value={state.user}
+            onChange={(e) =>
+              setState({
+                ...state,
+                user: e.target.value,
+              })
+            }
+          />
+        </Col>
+        <Col xs={8}>
+          <FormInput
+            label="Content"
+            value={state.content}
+            onChange={(e) =>
+              setState({
+                ...state,
+                content: e.target.value,
+              })
+            }
+          />
+        </Col>
       </Row>
     </Container>
   );
